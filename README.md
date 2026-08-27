@@ -1,6 +1,6 @@
 # 🚦 Urban Traffic Signal Digital Twin with Adaptive and Reinforcement Learning Control
 
-🌐 **[Open the Interactive Streamlit Dashboard](https://YOUR-STREAMLIT-LINK.streamlit.app/)**
+🌐 **[Open the Interactive Streamlit Dashboard](https://urban-traffic-signal-digital-twin.streamlit.app/)**
 
 > A SUMO-based urban traffic signal digital twin comparing Fixed-Time, Actuated, Rule-Based Adaptive, and PPO Reinforcement Learning control across a three-intersection corridor.
 
@@ -14,9 +14,9 @@
 
 ## 🌐 Interactive Dashboard
 
-The complete project outputs can be explored through the Streamlit dashboard:
+The complete project outputs can be explored through the live Streamlit dashboard:
 
-### 👉 [Launch the Interactive Dashboard](https://YOUR-STREAMLIT-LINK.streamlit.app/)
+### 👉 [Launch the Interactive Dashboard](https://urban-traffic-signal-digital-twin.streamlit.app/)
 
 The dashboard provides interactive access to:
 
@@ -60,7 +60,7 @@ The project aims to:
 6. Develop a centralized PPO Reinforcement Learning controller.
 7. Evaluate all controllers using identical traffic demand.
 8. Compare traffic performance using exact SUMO TripInfo outputs.
-9. Visualize the final outputs using an interactive Streamlit dashboard.
+9. Visualize the final results through an interactive Streamlit dashboard.
 
 ---
 
@@ -111,25 +111,25 @@ W ------ J1 -------- J2 -------- J3 ------ E
 
 # 🚘 Traffic Demand
 
-The initial traffic demand includes:
+The traffic demand includes:
 
 * **West → East:** 900 veh/h
 * **East → West:** 700 veh/h
 * **North → South:** 300 veh/h at each intersection
 * **South → North:** 300 veh/h at each intersection
 
-The same traffic demand is used for all controllers to ensure a fair comparison.
+The same demand is used for all controllers to ensure a fair comparison.
 
 ---
 
 # 🔬 Methodology
 
-The overall project workflow is:
+The complete workflow is:
 
 ```text
 SUMO Urban Corridor
         ↓
-Traffic Demand Generation
+Traffic Demand
         ↓
 Fixed-Time Baseline
         ↓
@@ -177,7 +177,7 @@ The Actuated controller uses SUMO's traffic-responsive signal control.
 
 Green durations can adjust according to traffic demand while respecting minimum and maximum green constraints.
 
-This allows the controller to respond to changing traffic conditions rather than relying only on fixed signal timings.
+This allows the controller to respond to traffic conditions instead of relying only on fixed timing.
 
 ---
 
@@ -206,7 +206,7 @@ The controller also respects:
 * maximum green time
 * yellow transition time
 
-This provides an interpretable adaptive benchmark before applying reinforcement learning.
+This provides an interpretable adaptive benchmark before reinforcement learning.
 
 ---
 
@@ -214,7 +214,7 @@ This provides an interpretable adaptive benchmark before applying reinforcement 
 
 The final controller uses **Proximal Policy Optimization (PPO)** implemented with Stable-Baselines3.
 
-A single centralized agent controls:
+A centralized agent controls all three intersections:
 
 ```text
 J1
@@ -238,8 +238,6 @@ With three intersections:
 3 intersections × 3 variables = 9 observations
 ```
 
----
-
 ## Action Space
 
 For each intersection:
@@ -248,8 +246,6 @@ For each intersection:
 0 = request East-West green
 1 = request North-South green
 ```
-
-The combined action therefore controls all three intersections simultaneously.
 
 Example:
 
@@ -264,8 +260,6 @@ J1 → East-West
 J2 → North-South
 J3 → East-West
 ```
-
----
 
 ## Reward Function
 
@@ -300,7 +294,7 @@ models/ppo_traffic_signal_v2.zip
 
 # 📊 Performance Indicators
 
-All four controllers are evaluated using the same traffic demand and SUMO network.
+All four controllers are evaluated using the same network and traffic demand.
 
 The final performance indicators include:
 
@@ -314,7 +308,7 @@ The final performance indicators include:
 * Maximum network queue
 * Network clearance time
 
-Exact per-vehicle performance measures are obtained using **SUMO TripInfo output**.
+Exact per-vehicle measures are obtained using **SUMO TripInfo output**.
 
 ---
 
@@ -335,17 +329,17 @@ Exact per-vehicle performance measures are obtained using **SUMO TripInfo output
 
 # ✅ Answers to the Research Questions
 
-## RQ1 — How does Fixed-Time control perform?
+## RQ1 — How does Fixed-Time Control perform?
 
 Fixed-Time Control successfully serves all **3401 vehicles**, but it produces the largest average queue and maximum queue among the evaluated controllers.
 
-It therefore provides a useful conventional baseline but is less responsive to changing traffic conditions.
+It provides a stable conventional baseline but is less responsive to changing traffic conditions.
 
 ---
 
 ## RQ2 — Does Actuated Control improve performance?
 
-**Yes.**
+**Yes, partially.**
 
 Compared with Fixed-Time Control, Actuated Control reduces:
 
@@ -364,7 +358,7 @@ However, the number of stops per vehicle increases.
 
 ## RQ3 — Does Rule-Based Adaptive Control further improve traffic operations?
 
-The Rule-Based Adaptive controller performs well in terms of queue reduction.
+The Rule-Based Adaptive controller performs well in queue reduction.
 
 Compared with Fixed-Time Control, it produces:
 
@@ -378,7 +372,7 @@ However, it also produces:
 * higher time loss
 * more stops per vehicle
 
-This demonstrates that **optimizing only queue length is not sufficient for overall traffic efficiency**.
+This demonstrates that **minimizing queue length alone does not guarantee the best overall traffic performance**.
 
 ---
 
@@ -410,7 +404,7 @@ Compared with Actuated Control, PPO RL achieves approximately:
 * **28.8% lower mean queue**
 * **34.5% lower maximum queue**
 
-These results indicate that the learned PPO control policy provides a stronger overall balance across several competing corridor traffic objectives.
+These results indicate that the learned PPO control policy provides a stronger overall balance across several competing traffic-performance objectives.
 
 ---
 
@@ -428,15 +422,15 @@ These results indicate that the learned PPO control policy provides a stronger o
 
 ✅ PPO achieved the highest mean trip speed.
 
-⚠️ Fixed-Time Control still produced the lowest stops per vehicle.
+⚠️ Fixed-Time Control still produced the lowest number of stops per vehicle.
 
-💡 The results demonstrate that effective traffic signal control requires balancing multiple performance objectives rather than optimizing only one traffic measure.
+💡 The results show that effective traffic signal control requires balancing several traffic objectives rather than optimizing only one measure.
 
 ---
 
 # 📊 Generated Figures
 
-The project automatically generates the following figures:
+The project automatically generates:
 
 ```text
 figures/
@@ -458,27 +452,25 @@ The figures compare all four controllers and visualize both final KPIs and traff
 
 # 🌐 Interactive Streamlit Dashboard
 
-The project includes an interactive Streamlit dashboard.
+The project includes a live interactive Streamlit dashboard.
+
+### 🚀 [Open the Live Dashboard](https://urban-traffic-signal-digital-twin.streamlit.app/)
 
 The dashboard allows users to:
 
 * compare controller KPIs
-* select individual performance indicators
-* inspect final traffic-performance figures
+* select performance indicators interactively
+* inspect traffic-performance figures
 * compare traffic conditions over time
 * examine queue evolution
 * examine speed evolution
 * review research questions and findings
 
-Run locally using:
+To run the dashboard locally:
 
 ```bash
 streamlit run app.py
 ```
-
-Or open the hosted version:
-
-### 👉 [Open the Interactive Streamlit Dashboard](https://YOUR-STREAMLIT-LINK.streamlit.app/)
 
 ---
 
@@ -529,7 +521,7 @@ urban-traffic-signal-digital-twin/
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/urban-traffic-signal-digital-twin.git
+git clone https://github.com/Biruhi/urban-traffic-signal-digital-twin.git
 ```
 
 Enter the project directory:
@@ -552,15 +544,13 @@ SUMO must be installed separately to rerun the simulations.
 
 The `SUMO_HOME` environment variable must also be configured.
 
-The Streamlit dashboard itself does **not** require SUMO because it reads the saved project results and figures.
+The deployed Streamlit dashboard does **not** require SUMO because it reads the saved project results and figures.
 
 ---
 
 # ▶️ Run the Complete Project
 
-The trained PPO model is already included.
-
-Therefore, PPO does **not** need to be retrained every time.
+The trained PPO model is already included, so PPO does **not** need to be retrained every time.
 
 Run:
 
@@ -568,7 +558,7 @@ Run:
 python run_all.py
 ```
 
-This automatically runs:
+This executes:
 
 ```text
 Fixed-Time Control
@@ -596,7 +586,7 @@ To intentionally train a new PPO model:
 python training/train_rl.py
 ```
 
-The trained model is saved in:
+The trained model is saved as:
 
 ```text
 models/ppo_traffic_signal_v2.zip
@@ -616,11 +606,15 @@ The dashboard normally opens at:
 http://localhost:8501
 ```
 
+The hosted version is available at:
+
+### 👉 https://urban-traffic-signal-digital-twin.streamlit.app/
+
 ---
 
 # 📦 Python Requirements
 
-The project uses:
+The main Python packages are:
 
 ```text
 numpy
@@ -653,7 +647,7 @@ streamlit
 
 This project demonstrates the integration of:
 
-**Traffic Flow and Signal Control**
+**Traffic Signal Control**
 ↓
 **Microscopic Traffic Simulation**
 ↓
@@ -676,8 +670,8 @@ It provides a practical demonstration of how artificial intelligence can be inte
 Potential extensions include:
 
 * Multi-agent reinforcement learning
-* Larger urban networks
-* Dynamic and stochastic demand
+* Larger urban traffic networks
+* Dynamic and stochastic traffic demand
 * Incident scenarios
 * Pedestrian phases
 * Transit signal priority
@@ -686,13 +680,19 @@ Potential extensions include:
 * Emission and fuel-consumption objectives
 * Multi-objective reinforcement learning
 * Real-world detector-data calibration
-* Transferability testing across networks
+* Transferability testing across different networks
 
 ---
 
 # 📌 Main Takeaway
 
-> **PPO Reinforcement Learning provided the strongest overall traffic performance among the evaluated traffic signal controllers by reducing travel time, waiting time, congestion, and queue formation while increasing corridor travel speed.**
+> **PPO Reinforcement Learning provided the strongest overall traffic performance among the evaluated traffic signal controllers by reducing travel time, waiting time, time loss, and queue formation while increasing corridor travel speed.**
+
+---
+
+## 🌐 Live Project
+
+### 🚦 [Explore the Interactive Streamlit Dashboard](https://urban-traffic-signal-digital-twin.streamlit.app/)
 
 ---
 
