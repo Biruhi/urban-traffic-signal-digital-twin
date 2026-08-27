@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-08-27T13:53:01.508523+03:00 by Eclipse SUMO sumo 1.26.0
+<!-- generated on 2026-08-27T14:40:23.452791+03:00 by Eclipse SUMO sumo 1.26.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="sumo\network_actuated.net.xml"/>
-        <route-files value="sumo\routes.rou.xml"/>
+        <net-file value="C:\sumo_project\urban-traffic-signal-digital-twin\sumo\network_actuated.net.xml"/>
+        <route-files value="C:\sumo_project\urban-traffic-signal-digital-twin\sumo\routes.rou.xml"/>
     </input>
 
     <output>
-        <tripinfo-output value="results\actuated_tripinfo.xml"/>
+        <tripinfo-output value="C:\sumo_project\urban-traffic-signal-digital-twin\results\actuated_tripinfo.xml"/>
     </output>
 
     <time>
@@ -18,16 +18,12 @@
         <step-length value="1"/>
     </time>
 
-    <processing>
-        <waiting-time-memory value="5000"/>
-    </processing>
-
     <report>
         <no-step-log value="true"/>
     </report>
 
     <traci_server>
-        <remote-port value="62321"/>
+        <remote-port value="64867"/>
     </traci_server>
 
 </sumoConfiguration>

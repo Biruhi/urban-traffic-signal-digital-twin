@@ -38,7 +38,7 @@ def show_image(filename, caption=None):
         st.image(
             str(path),
             caption=caption,
-            use_container_width=True,
+            width="stretch",
         )
 
 
@@ -244,7 +244,7 @@ elif page == "Controller Comparison":
 
         st.dataframe(
             display.round(3),
-            use_container_width=True,
+            width="stretch",
             hide_index=True,
         )
 
@@ -635,7 +635,7 @@ elif page == "Key Findings":
 
 The trained PPO controller achieved:
 
-- **12.2% lower travel time than Actuated Control**
+- **11.4% lower travel time than Actuated Control**
 - **23.3% lower waiting time than Actuated Control**
 - **16.8% lower time loss than Actuated Control**
 - **12.8% higher mean trip speed than Actuated Control**

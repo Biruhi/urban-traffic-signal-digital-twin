@@ -1,2 +1,2 @@
 controller,completed_vehicles,mean_travel_time_s,mean_waiting_time_s,mean_time_loss_s,mean_stops_per_vehicle,mean_trip_speed_km_h,mean_queue_vehicles,max_queue_vehicles,clearance_time_s
-Fixed Time,3401,27.84,12.461,18.961,0.599,14.998,12.134,31,3772.0
+Fixed-Time Control,3401,27.84,12.461,18.961,0.599,14.998,12.134,31,3772.0

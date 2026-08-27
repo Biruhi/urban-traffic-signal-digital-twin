@@ -7,6 +7,14 @@ from gymnasium import spaces
 
 
 # =========================================================
+# PROJECT ROOT
+# =========================================================
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
+
+
+# =========================================================
 # SUMO / TraCI SETUP
 # =========================================================
 if "SUMO_HOME" not in os.environ:
@@ -80,6 +88,7 @@ class TrafficSignalEnv(gym.Env):
     def __init__(
         self,
         sumo_config=os.path.join(
+            PROJECT_ROOT,
             "sumo",
             "simulation.sumocfg"
         ),
@@ -124,8 +133,6 @@ class TrafficSignalEnv(gym.Env):
         # -------------------------------------------------
         # Signal phases
         #
-        # Your current SUMO signal program:
-        #
         # Phase 0 = East-West green
         # Phase 1 = East-West yellow
         # Phase 2 = North-South green
@@ -139,11 +146,6 @@ class TrafficSignalEnv(gym.Env):
 
         # -------------------------------------------------
         # ACTION SPACE
-        #
-        # Each intersection has two actions:
-        #
-        # 0 = East-West
-        # 1 = North-South
         # -------------------------------------------------
         self.action_space = (
             spaces.MultiDiscrete(
@@ -153,23 +155,6 @@ class TrafficSignalEnv(gym.Env):
 
         # -------------------------------------------------
         # OBSERVATION SPACE
-        #
-        # J1:
-        #   EW queue
-        #   NS queue
-        #   current direction
-        #
-        # J2:
-        #   EW queue
-        #   NS queue
-        #   current direction
-        #
-        # J3:
-        #   EW queue
-        #   NS queue
-        #   current direction
-        #
-        # Total = 9
         # -------------------------------------------------
         self.observation_space = (
             spaces.Box(
@@ -197,7 +182,6 @@ class TrafficSignalEnv(gym.Env):
     # =====================================================
     def _start_sumo(self):
 
-        # Close any previous TraCI connection
         if self.running:
 
             try:
@@ -206,9 +190,6 @@ class TrafficSignalEnv(gym.Env):
             except Exception:
                 pass
 
-        # -------------------------------------------------
-        # SUMO command
-        # -------------------------------------------------
         sumo_cmd = [
             "sumo",
             "-c",
@@ -221,12 +202,6 @@ class TrafficSignalEnv(gym.Env):
             "5000",
         ]
 
-        # -------------------------------------------------
-        # Optional TripInfo output
-        #
-        # Used during final evaluation.
-        # Not required during PPO training.
-        # -------------------------------------------------
         if self.tripinfo_output is not None:
 
             sumo_cmd.extend(
@@ -352,14 +327,12 @@ class TrafficSignalEnv(gym.Env):
                 y2 - y1
             )
 
-            # Mostly horizontal
             if dx >= dy:
 
                 ew_lanes.append(
                     lane_id
                 )
 
-            # Mostly vertical
             else:
 
                 ns_lanes.append(
@@ -442,14 +415,10 @@ class TrafficSignalEnv(gym.Env):
 
         observations = []
 
-        # Queue normalization factor
         queue_scale = 30.0
 
         for tls_id in self.tls_ids:
 
-            # ---------------------------------------------
-            # Queue values
-            # ---------------------------------------------
             ew_queue = self._queue(
                 self.lane_groups[
                     tls_id
@@ -462,9 +431,6 @@ class TrafficSignalEnv(gym.Env):
                 ]["NS"]
             )
 
-            # ---------------------------------------------
-            # Current signal phase
-            # ---------------------------------------------
             phase = (
                 traci.trafficlight
                 .getPhase(
@@ -472,8 +438,6 @@ class TrafficSignalEnv(gym.Env):
                 )
             )
 
-            # 0 = EW
-            # 1 = NS
             if phase in [
                 self.EW_GREEN,
                 self.EW_YELLOW,
@@ -485,9 +449,6 @@ class TrafficSignalEnv(gym.Env):
 
                 direction = 1.0
 
-            # ---------------------------------------------
-            # Normalize queues to 0-1
-            # ---------------------------------------------
             normalized_ew = min(
                 ew_queue
                 / queue_scale,
@@ -527,9 +488,6 @@ class TrafficSignalEnv(gym.Env):
 
         switching = {}
 
-        # -------------------------------------------------
-        # Determine requested changes
-        # -------------------------------------------------
         for i, tls_id in enumerate(
             self.tls_ids
         ):
@@ -545,7 +503,6 @@ class TrafficSignalEnv(gym.Env):
                 )
             )
 
-            # Current direction
             if current_phase in [
                 self.EW_GREEN,
                 self.EW_YELLOW,
@@ -557,9 +514,6 @@ class TrafficSignalEnv(gym.Env):
 
                 current_direction = 1
 
-            # ---------------------------------------------
-            # Minimum-green constraint
-            # ---------------------------------------------
             green_elapsed = (
                 current_time
                 - self.last_green_change[
@@ -605,7 +559,6 @@ class TrafficSignalEnv(gym.Env):
                 )
             )
 
-            # EW -> yellow
             if (
                 current_phase
                 == self.EW_GREEN
@@ -616,7 +569,6 @@ class TrafficSignalEnv(gym.Env):
                     self.EW_YELLOW,
                 )
 
-            # NS -> yellow
             elif (
                 current_phase
                 == self.NS_GREEN
@@ -664,7 +616,6 @@ class TrafficSignalEnv(gym.Env):
             if not should_switch:
                 continue
 
-            # Request EW green
             if requested_direction == 0:
 
                 traci.trafficlight.setPhase(
@@ -672,7 +623,6 @@ class TrafficSignalEnv(gym.Env):
                     self.EW_GREEN,
                 )
 
-            # Request NS green
             else:
 
                 traci.trafficlight.setPhase(
@@ -722,9 +672,6 @@ class TrafficSignalEnv(gym.Env):
         Larger congestion produces a more negative reward.
         """
 
-        # -------------------------------------------------
-        # Total queue
-        # -------------------------------------------------
         total_queue = 0
 
         for tls_id in self.tls_ids:
@@ -741,23 +688,14 @@ class TrafficSignalEnv(gym.Env):
                 ]["NS"]
             )
 
-        # -------------------------------------------------
-        # Total waiting time
-        # -------------------------------------------------
         total_waiting = (
             self._total_waiting_time()
         )
 
-        # -------------------------------------------------
-        # Vehicles currently accumulated in network
-        # -------------------------------------------------
         total_vehicles = len(
             traci.vehicle.getIDList()
         )
 
-        # -------------------------------------------------
-        # Reward components
-        # -------------------------------------------------
         queue_penalty = (
             2.0
             * total_queue
@@ -824,17 +762,14 @@ class TrafficSignalEnv(gym.Env):
         action
     ):
 
-        # Apply PPO decision
         self._apply_actions(
             action
         )
 
-        # New observation
         observation = (
             self._get_observation()
         )
 
-        # Reward
         reward = (
             self._calculate_reward()
         )
@@ -848,20 +783,10 @@ class TrafficSignalEnv(gym.Env):
             .getMinExpectedNumber()
         )
 
-        # -------------------------------------------------
-        # Natural termination
-        #
-        # All vehicles have completed their trips.
-        # -------------------------------------------------
         terminated = (
             remaining_vehicles <= 0
         )
 
-        # -------------------------------------------------
-        # Safety truncation
-        #
-        # Prevent endless/gridlocked episodes.
-        # -------------------------------------------------
         truncated = (
             simulation_time
             >= self.max_simulation_time

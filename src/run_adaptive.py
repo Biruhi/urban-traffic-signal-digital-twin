@@ -3,16 +3,31 @@ import sys
 import csv
 
 
+# ---------------------------------------------------------
+# Project root
+# ---------------------------------------------------------
+
 PROJECT_ROOT = os.path.dirname(
-    os.path.abspath(__file__)
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
 )
 
 if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+    sys.path.insert(
+        0,
+        PROJECT_ROOT
+    )
 
+
+# ---------------------------------------------------------
+# SUMO setup
+# ---------------------------------------------------------
 
 if "SUMO_HOME" not in os.environ:
-    sys.exit("Please set SUMO_HOME.")
+    sys.exit(
+        "Please set SUMO_HOME."
+    )
 
 
 SUMO_TOOLS = os.path.join(
@@ -21,31 +36,43 @@ SUMO_TOOLS = os.path.join(
 )
 
 if SUMO_TOOLS not in sys.path:
-    sys.path.append(SUMO_TOOLS)
+    sys.path.append(
+        SUMO_TOOLS
+    )
 
 
 import traci
 
-from evaluation.kpi_utils import summarize_tripinfo
+from kpi_utils import summarize_tripinfo
 
+
+# ---------------------------------------------------------
+# File paths
+# ---------------------------------------------------------
 
 SUMO_CONFIG = os.path.join(
+    PROJECT_ROOT,
     "sumo",
     "simulation.sumocfg"
 )
 
+RESULTS_DIR = os.path.join(
+    PROJECT_ROOT,
+    "results"
+)
+
 TRIPINFO_FILE = os.path.join(
-    "results",
+    RESULTS_DIR,
     "adaptive_tripinfo.xml"
 )
 
 TIMESERIES_FILE = os.path.join(
-    "results",
+    RESULTS_DIR,
     "adaptive_timeseries.csv"
 )
 
 SUMMARY_FILE = os.path.join(
-    "results",
+    RESULTS_DIR,
     "adaptive_summary.csv"
 )
 
@@ -67,7 +94,7 @@ NS_YELLOW = 3
 
 
 os.makedirs(
-    "results",
+    RESULTS_DIR,
     exist_ok=True
 )
 
@@ -121,9 +148,13 @@ def classify_lanes(tls_id):
         dy = abs(y2 - y1)
 
         if dx >= dy:
-            ew_lanes.append(lane_id)
+            ew_lanes.append(
+                lane_id
+            )
         else:
-            ns_lanes.append(lane_id)
+            ns_lanes.append(
+                lane_id
+            )
 
     return ew_lanes, ns_lanes
 
@@ -397,7 +428,9 @@ with open(
     newline=""
 ) as f:
 
-    writer = csv.writer(f)
+    writer = csv.writer(
+        f
+    )
 
     writer.writerow(
         [
